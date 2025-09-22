@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var names : [String] = ["Elisha","Andre","Jasmine","Po-Chun","Kai","Aria","Froyo","Ali","Bas","Rahul"]
+    @State private var names : [String] = ["Elisha", "Andre", "Jasmine", "Po-Chun", "Kai", "Aria"]
     @State private var nameToAdd : String = ""
     @State private var pickedName : String = ""
     @State private var shouldRemovePickedName : Bool = false
     @State var showLoginAlert = false
     @State var savedList : [String] = []
-    
+  
     var body: some View {
         VStack {
-            VStack (spacing : 10) {
+            VStack(spacing : 10) {
                 Image(systemName: "person.3.fill")
                 Text("Pick-a-Pal")
             }
@@ -38,39 +38,37 @@ struct ContentView: View {
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
-            
             TextField("Add name",text: $nameToAdd)
                 .onSubmit {
-                    //removing all whitespaces in string before adding it to the list
+// removing all whitespaces in string before adding it to the list
                     nameToAdd = nameToAdd.trimmingCharacters(in: .whitespaces)
-                    
-                    if(!nameToAdd.isEmpty){
+                    if(!nameToAdd.isEmpty) {
                         showLoginAlert = names.contains(nameToAdd)
-                        if !showLoginAlert{
+                        if !showLoginAlert {
                             names.append(nameToAdd)
                             nameToAdd = ""
                         }
                     }
                 }
                 .alert(isPresented: $showLoginAlert) {
-                    Alert(title: Text("Name already exists"), message: Text("Please choose a different name"), dismissButton: .default(Text("OK")))
+                    let title = Text("Name already exists")
+                    let message = Text("Please choose a different name")
+                    return Alert(title: title, message: message, dismissButton: .default(Text("OK")))
                 }
                 .keyboardType(.default)
                 .autocorrectionDisabled()
-                
-                
             Divider()
             Toggle("Remove when picked", isOn: $shouldRemovePickedName)
                 .fontWeight(.bold)
-            HStack{
-                Button("Save List", systemImage: "document.circle.fill"){
+            HStack {
+                Button("Save List", systemImage: "document.circle.fill") {
                     savedList.append(contentsOf: names)
                     UserDefaults.standard.set(savedList, forKey: "savedList")
                 }
                 .disabled(names.isEmpty)
                 Spacer()
-                Button("Load List", systemImage: "arrowshape.turn.up.backward.circle.fill"){
-                    names = UserDefaults.standard.array(forKey:"savedList") as! [String]
+                Button("Load List", systemImage: "arrowshape.turn.up.backward.circle.fill") {
+                    names = UserDefaults.standard.array(forKey:"savedList") as? [String] ?? ["Elisha", "Nila"]
                 }
             }
             .labelStyle(.titleAndIcon)
@@ -78,17 +76,15 @@ struct ContentView: View {
             .buttonStyle(.bordered)
             .shadow(color: .black, radius: 5)
             .buttonBorderShape(.capsule)
-            
             Divider()
-            Button{
-                if let randomName = names.randomElement(){
+            Button {
+                if let randomName = names.randomElement() {
                     pickedName = randomName
-                }else{
+                } else {
                     pickedName = ""
                 }
-                
-                if shouldRemovePickedName{
-                    if let index = names.firstIndex(of: pickedName){
+                if shouldRemovePickedName {
+                    if let index = names.firstIndex(of: pickedName) {
                         names.remove(at: index)
                     }
                 }
@@ -102,7 +98,6 @@ struct ContentView: View {
             .buttonStyle(.bordered)
             .shadow(color: .black, radius: 5)
             .buttonBorderShape(.capsule)
-            
         }
         .frame(maxWidth: .infinity,maxHeight: .infinity)
         .padding()
