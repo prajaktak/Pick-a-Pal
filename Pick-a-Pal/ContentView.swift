@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var shouldRemovePickedName : Bool = false
     @State var showLoginAlert = false
     @State var savedList : [String] = []
+  
     var body: some View {
         VStack {
             VStack(spacing : 10) {
